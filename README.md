@@ -71,13 +71,13 @@ streamlit run streamlit_app.py
 
 ## Google Colabでの実行とシークレットキーの設定
 ### ngrok APIキーの設定
-ngrok APIキーの設定方法については、このガイド([npaka(2024.4)](https://note.com/npaka/n/n79bb63e17685))を参照してください。
+ngrok APIキーの設定方法については、このガイド([npaka(2024.4)Google Colab のシークレット機能の使い方](https://note.com/npaka/n/n79bb63e17685))を参照してください。
 
 ### Gemini APIキーの入力
-（ここにGemini APIキーの入力方法を記述します。）
+[Ry02024(2024.4)社会資源コンシェルジュ,GitHub](https://github.com/Ry02024/SocialResourceFinder?tab=readme-ov-file)、READ.meの「2. 使用方法」を参照してください。
 
 ### 注意
-（ここにセッション終了時の注意点を記述します。）
+アプリ画面を終了すると、入力した秘密情報(Gemini APIキー)は削除されます。アプリを起動するたびに、秘密情報を再入力する必要があります。
 
 ## コントリビューション
 
