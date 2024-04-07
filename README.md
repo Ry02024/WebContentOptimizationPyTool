@@ -1,4 +1,4 @@
-# WebContentOptimizationTool
+# WebContentOptimizationPyTool
 # ウェブページテキストスクレイピングと類似度分析アプリ
 
 ## 目次
