@@ -3,4 +3,5 @@ requests
 beautifulsoup4
 nltk
 scikit-learn
+google-generativeai
 # google-generativeai この行は、GoogleのGenerative AIに関連する正確なパッケージ名に置き換える必要があります。
