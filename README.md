@@ -28,6 +28,7 @@
 - BeautifulSoup
 - NLTK
 - Scikit-learn
+- Google-generativeai
 
 ## アプリの使用方法
 ### Streamlit Cloudを使用する
