@@ -74,7 +74,7 @@ Google Colabでの実行手順については、上記「Google Colabとngrokを
 ## バージョンアップ情報
 - **Version 1.0 (Yomi)**: 基本機能としてウェブページからのテキストスクレイピングと類似度分析を提供。
 
-![Yomi Version 1.0](/images/YominoKuni2_Thum.jpg "Yomi Version 1.0 Thumbnail")
+![Yomi Version 1.0](/images/YominoKuni_Thumb2.jpg "Yomi Version 1.0 Thumbnail")
 
 - **Version 2.0 (Toyotama)**: テキスト比較とリライト提案機能を新たに追加。Gemini APIのSEMANTIC_SIMILARITYを利用した高度な類似度分析を実装し、テキスト間の深い関連性の探求と新しい文脈でのコンテンツ生成をサポート。
   
