@@ -48,33 +48,17 @@ def text_explanation(text):
     # 応答のテキスト部分を返す
     return response.text
 #テキストを分割し、TF-IDFベクトルに変換後、文間の類似度を計算
-def split_and_vectorize_text(text, min_length=20):
-    """
-    指定されたテキストを文に分割し、TF-IDFベクトルに変換後、文間の類似度を計算します。
+def split_and_vectorize_text(text):
+    embedding = genai.embed_content(
+        model="models/embedding-001",
+        content=text,
+        task_type="SEMANTIC_SIMILARITY",)
+    return embedding
 
-    Parameters:
-    - text: 分割とベクトル化を行う長いテキスト。
-    - min_length: 分割された各文の最小長。この値以下の長さの文は無視されます。
+def calculate_semantic_similarity(embedding1, embedding2):
+    similarity_score = cosine_similarity([embedding1], [embedding2])[0][0]
+    return similarity_score
 
-    Returns:
-    - cosine_similarity_matrix: 各文間のコサイン類似度行列。
-    """
-
-    # 文書の分割
-    sentences = re.split(r"[。\.]", text)
-    long_sentences = [sentence.strip() for sentence in sentences if len(sentence.strip()) >= min_length]
-
-    if len(long_sentences) > 1:
-        # TF-IDFベクトル化
-        vectorizer = TfidfVectorizer()
-        tfidf_matrix = vectorizer.fit_transform(long_sentences)
-
-        # 類似度計算
-        cosine_similarity_matrix = cosine_similarity(tfidf_matrix, tfidf_matrix)
-
-        return long_sentences, cosine_similarity_matrix
-    else:
-        return None
 #テキスト間を類似度を根拠に比較
 def get_similarity_explanation_with_score(text1, text2, similarity_score):
     model = genai.GenerativeModel('gemini-pro')
@@ -109,56 +93,29 @@ def get_similarity_explanation_with_score(text1, text2, similarity_score):
     # 応答のテキスト部分を返す
     return response.text
 
-#類似度行列をもとに、各文書に対して最も類似度が高い文書を見つけます。
-def find_most_similar_documents(similarity_matrix, threshold=0.3):
-    """
-    与えられた類似度行列をもとに、各文書に対して最も類似度が高い文書を見つけます。
-
-    Parameters:
-    - similarity_matrix: 文書間の類似度行列
-    - threshold: この類似度スコア以上の文書を考慮する
-
-    Returns:
-    - similar_documents: 各文書に対して最も類似度が高い文書のインデックスと類似度スコアを含むリスト
-    """
-
-    similar_documents = []
-    for i in range(similarity_matrix.shape[0]):
-        similarity_scores = similarity_matrix[i]
-        similarity_scores[i] = 0  # 自分自身のスコアを0に設定
-
-        # 最も類似度が高い文書のインデックスを取得
-        most_similar_doc_index = np.argmax(similarity_scores)
-        most_similar_doc_score = similarity_scores[most_similar_doc_index]
-
-        if most_similar_doc_score >= threshold:
-            similar_documents.append((i, most_similar_doc_index, most_similar_doc_score))
-
-    return similar_documents
 #テキスト表示
-def display_similar_documents(sentences, similar_documents):
+def display_similar_documents(text1, text2, score):
     """
     Display pairs of similar documents using Streamlit.
 
     :param sentences: List of sentences/documents.
     :param similar_documents: List of tuples with the format (index1, index2, similarity_score).
     """
-    for i, (doc_idx1, doc_idx2, score) in enumerate(similar_documents):
-        with st.container():
-            st.write(f"文章 {doc_idx1 + 1}と文章 {doc_idx2 + 1}の比較")
-            col1, col2 = st.columns(2)
-            with col1:
-                st.subheader(f"文章 {doc_idx1 + 1}")
-                st.write(f"{text_explanation(sentences[doc_idx1])}")
-            with col2:
-                st.subheader(f"文章 {doc_idx2 + 1}")
-                st.write(f"{text_explanation(sentences[doc_idx2])}")
+    with st.container():
+        st.write(f"文章 {1}と文章 {2}の比較")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.subheader(f"文章 {1}")
+            st.write(f"{text_explanation(text1)}")
+        with col2:
+            st.subheader(f"文章 {2}")
+            st.write(f"{text_explanation(text2)}")
 
-            st.write(f"類似度スコア: {score:.2f}")
-            # Assuming get_similarity_explanation_with_score is a predefined function that takes two texts and a similarity score
-            explanation = get_similarity_explanation_with_score(sentences[doc_idx1], sentences[doc_idx2], score)
-            with st.expander("類似度の詳細分析"):
-                st.write(explanation)
+        st.write(f"類似度スコア: {score:.2f}")
+        # Assuming get_similarity_explanation_with_score is a predefined function that takes two texts and a similarity score
+        explanation = get_similarity_explanation_with_score(text1, text2, score)
+        with st.expander("類似度の詳細分析"):
+            st.write(explanation)
 
 # This function is designed to work within a Streamlit app.
 # It iterates over each pair of similar documents, displays their content side by side, and shows their similarity score.
@@ -173,25 +130,27 @@ def main():
     st.title('ウェブページテキストスクレイピングと類似度分析アプリ')
 
     # ユーザー入力部分
-    user_input_url = st.text_input("分析するウェブページのURLを入力してください:")
+    user_input_url1 = st.text_input("分析するウェブページのURL1を入力してください:")
+    user_input_url2 = st.text_input("分析するウェブページのURL2を入力してください:")
 
     # 分析ボタン
     if st.button('テキスト抽出と類似度分析'):
-        if user_input_url:
-            # コンテンツ収集
-            all_text = scrape_all_text(user_input_url)
-            if not all_text.startswith("Error"):
-                #テキストを分割し、TF-IDFベクトルに変換後、文間の類似度を計算
-                long_sentences, cosine_sim = split_and_vectorize_text(all_text, min_length=20)
-                # 類似度が高い文書のインデックスと類似度スコアを含むリストを取得
-                similar_documents = find_most_similar_documents(cosine_sim, threshold=0.3)
-                # 類似度スコアが0.3以上の場合に結果を表示
-                display_similar_documents(long_sentences, similar_documents)
+        # コンテンツ収集
+        text1 = scrape_all_text(user_input_url1)
+        text2 = scrape_all_text(user_input_url2)
+        #テキストを分割し、TF-IDFベクトルに変換後、文間の類似度を計算
+        result1 = split_and_vectorize_text(text1[:1000])
+        result2 = split_and_vectorize_text(text2[:1000])
+        # result1とresult2から埋め込みベクトルを抽出する
+        embedding1 = result1['embedding']
+        embedding2 = result2['embedding']
 
-            else:
-                st.error(all_text)
-        else:
-            st.error("URLが入力されていません。")
+        # それらの埋め込みベクトルを用いて類似度を計算する
+        similarity = calculate_semantic_similarity(embedding1, embedding2)
+        display_similar_documents(text1, text2, similarity)
+
+    else:
+        st.error("URLが入力されていません。")
 
 if __name__ == '__main__':
     main()
