@@ -78,7 +78,7 @@ Google Colabでの実行手順については、上記「Google Colabとngrokを
 
 - **Version 2.0 (Toyotama)**: テキスト比較とリライト提案機能を新たに追加。Gemini APIのSEMANTIC_SIMILARITYを利用した高度な類似度分析を実装し、テキスト間の深い関連性の探求と新しい文脈でのコンテンツ生成をサポート。
   
-![Toyotama Version 2.0](/images/ToyotamaHime2_Thum.jpg "Toyotama Version 2.0 Thumbnail")
+[![Toyotama Version 2.0](/images/ToyotamaHime2_Thum.jpg "Toyotama Version 2.0 Thumbnail")](https://opensea.io/assets/matic/0x1a74c69e18a6adb4fccbcf8a9355f221462663e5/1/)
 
 
 
