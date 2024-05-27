@@ -41,7 +41,7 @@
 
 ## アプリの使用方法
 ### Streamlit Cloudを使用する
-Streamlit Cloudでホストされているため、特別な実行手順は不要です。以下のURLからアクセスできます。
+Streamlit Cloudでホストされているため、特別な実行手順は不要です。以下のURLからアクセスできます。ただし、無料枠で使っているため、他のアプリにソースを割いている可能性があります。その際は、このソースをダウンロードしてお使いください。
 [https://webcontentoptimizationpytool-jl7w8ftyltzkvtv86nyhgh.streamlit.app/](https://webcontentoptimizationpytool-jl7w8ftyltzkvtv86nyhgh.streamlit.app/)
 
 ### Google Colabとngrokを使用する
